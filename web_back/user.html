@@ -24,22 +24,22 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="李思思">
+                        <input type="text" class="form-control user_truename" id="inputEmail3" value="李思思" name="username">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="思思">
+                        <input type="text" class="form-control user_nickname" id="inputEmail3" value="思思" name="nickname">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" id="inputEmail3" value="lisisi@126.com">
+                        <input type="text" class="form-control user_email" id="inputEmail3" value="lisisi@126.com" name="email">
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
@@ -49,16 +49,17 @@
                 </div>
 
                 <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
-                        <div class="col-sm-4">
-                            <input type="password" class="form-control" id="inputEmail3" value="12345678">
-                        </div>
+                    <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
+                    <div class="col-sm-4">
+                        <input type="password" class="form-control user_password" id="inputEmail3" value="12345678" name="password">
                     </div>
-               
-    
+                </div>
+
+
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">修改</button>
+                        <!-- <button type="submit" class="btn btn-success">修改</button> -->
+                        <button type="button" class="btn btn-success">修改</button>
                     </div>
                 </div>
             </form>
@@ -66,5 +67,49 @@
     </div>
 
 </body>
+<script src="./tools/config.js"></script>
+<script>
+    $(function() {
+        var user_truename = $(".user_truename");
+        var user_nickname = $(".user_nickname");
+        var user_email = $(".user_email");
+        var user_pic = $(".user_pic");
+        var user_password = $(".user_password");
+        var userinfo_edit = $(".btn-success");
+        var user_form = $(".article_form")[0];
+        console.log(user_form);
+        var fd = new FormData();
+        fd.append('username', user_truename.val());
+        fd.append('nickname', user_nickname.val());
+        console.log(fd);
+        $.ajax({
+            type: "GET",
+            url: GET_USERINFO,
+            success: function(res) {
+                console.log(res)
+                if (res.code === 200) {
+                    user_truename.val(res.data.username);
+                    user_nickname.val(res.data.nickname);
+                    user_email.val(res.data.email);
+                    user_pic.prop('src', res.data.user_pic);
+                    user_password.val(res.data.password);
+                }
+            }
+        });
+        userinfo_edit.on('click', function() {
+            fd.append('username', user_truename.val());
+            fd.append('nickname', user_nickname.val());
+            console.log(fd);
+            $.ajax({
+                type: "POST",
+                url: USERINFO_EDIT,
+                data: {},
+                success: function(res) {
+                    console.log(res);
+                }
+            })
+        })
+    })
+</script>
 
 </html>

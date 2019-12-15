@@ -18,7 +18,7 @@
         <a href="#" class="logo"><img src="images/logo02.png" alt="logo"></a>
         <div class="user_info">
             <img src="images/2.jpg" alt="person">
-            <span>欢迎&nbsp;&nbsp;李思思</span>
+            <span id="nickname">欢迎&nbsp;&nbsp;李思思</span>
             <b>管理员</b>
         </div>
         <div class="menu">
@@ -55,6 +55,9 @@
     <script src="./tools/user.js"></script>
     <script>
         var logout = $(".logout");
+        var nickname = $("#nickname");
+        var avatar = $(".user_info").find("img");
+        var avatar1 = $(".user_center_link").find("img");
         logout.on("click", function() {
             if (!confirm("是否确认退出？")) {
                 return;
@@ -67,6 +70,31 @@
                     alert("网络错误，稍后再试~")
                 }
             })
+        })
+
+        $.ajax({
+            type: "GET",
+            url: GETUSER,
+            success: function(res) {
+                if (res.code === 200) {
+                    nickname.html('欢迎&nbsp;&nbsp;' + res.data.nickname + '');
+                    avatar.prop('src', res.data.user_pic);
+                    avatar1.prop('src', res.data.user_pic);
+                }
+            }
+        })
+
+        $.ajax({
+            type: "GET",
+            url: ARTICLE_COUNT,
+            success: function(res) {
+                console.log(res)
+                if (res.code === 200) {
+                    nickname.html('欢迎&nbsp;&nbsp;' + res.data.nickname + '');
+                    avatar.prop('src', res.data.user_pic);
+                    avatar1.prop('src', res.data.user_pic);
+                }
+            }
         })
     </script>
 
