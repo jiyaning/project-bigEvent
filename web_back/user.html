@@ -44,7 +44,7 @@
                     <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
                         <img src="images/2.jpg" alt="" class="user_pic">
-                        <input type="file" id="exampleInputFile">
+                        <input type="file" id="exampleInputFile" name="user_pic">
                     </div>
                 </div>
 
@@ -74,14 +74,11 @@
         var user_nickname = $(".user_nickname");
         var user_email = $(".user_email");
         var user_pic = $(".user_pic");
+        // var exampleInputFile = $("#exampleInputFile");
+        var exampleInputFile = document.querySelector("#exampleInputFile");
         var user_password = $(".user_password");
         var userinfo_edit = $(".btn-success");
         var user_form = $(".article_form")[0];
-        console.log(user_form);
-        var fd = new FormData();
-        fd.append('username', user_truename.val());
-        fd.append('nickname', user_nickname.val());
-        console.log(fd);
         $.ajax({
             type: "GET",
             url: GET_USERINFO,
@@ -94,22 +91,62 @@
                     user_pic.prop('src', res.data.user_pic);
                     user_password.val(res.data.password);
                 }
+
+
             }
         });
+        var objURL;
+        $(exampleInputFile).on('change', function() {
+            if (exampleInputFile.files.length === 0) {
+                exampleInputFile.files[0] = user_pic.prop('src');
+            }
+            var objUrl = getObjectURL(this.files[0]);
+            console.log(objUrl);
+        });
         userinfo_edit.on('click', function() {
-            fd.append('username', user_truename.val());
-            fd.append('nickname', user_nickname.val());
-            console.log(fd);
+            var fd = new FormData(user_form);
+
+            if (exampleInputFile.files.length === 0) {
+                // 说明没有选择文件
+                fd.append('user_pic', user_pic.prop('src'));
+            } else {
+                fd.append('user_pic', exampleInputFile.files[0]);
+            }
+
+            console.log(fd.getAll('username')[0]);
+            console.log(fd.getAll('nickname')[0]);
+            console.log(fd.getAll('email')[0]);
+            console.log(fd.getAll('user_pic')[1]);
+            console.log(fd.getAll('password')[0]);
             $.ajax({
                 type: "POST",
                 url: USERINFO_EDIT,
-                data: {},
+                data: {
+                    username: fd.getAll('username')[0],
+                    nickname: fd.getAll('nickname')[0],
+                    email: fd.getAll('email')[0],
+                    user_pic: fd.getAll('user_pic')[1],
+                    password: fd.getAll('password')[0],
+                },
                 success: function(res) {
                     console.log(res);
                 }
             })
-        })
+        });
+
+        function getObjectURL(file) {
+            var url = null;
+            if (window.createObjectURL != undefined) { //basic
+                url = window.createObjectURL(file);
+            } else if (window.URL != undefined) { //mozilla(firefox) 
+                url = window.URL.createObjectURL(file);
+            } else if (window.webkitURL != undefined) { //webkit or chrome
+                url = window.webkitURL.createObjectURL(file);
+            }
+            return url;
+        };
     })
 </script>
+
 
 </html>

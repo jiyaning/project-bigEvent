@@ -77,19 +77,7 @@
             url: GETUSER,
             success: function(res) {
                 if (res.code === 200) {
-                    nickname.html('欢迎&nbsp;&nbsp;' + res.data.nickname + '');
-                    avatar.prop('src', res.data.user_pic);
-                    avatar1.prop('src', res.data.user_pic);
-                }
-            }
-        })
-
-        $.ajax({
-            type: "GET",
-            url: ARTICLE_COUNT,
-            success: function(res) {
-                console.log(res)
-                if (res.code === 200) {
+                    console.log(res);
                     nickname.html('欢迎&nbsp;&nbsp;' + res.data.nickname + '');
                     avatar.prop('src', res.data.user_pic);
                     avatar1.prop('src', res.data.user_pic);
