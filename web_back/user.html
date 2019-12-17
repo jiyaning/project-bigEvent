@@ -22,36 +22,36 @@
         <div class="container-fluid common_con">
             <form class="form-horizontal article_form">
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
+                    <label for="username" class="col-sm-2 control-label">用户名称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control user_truename" id="inputEmail3" value="李思思" name="username">
+                        <input type="text" class="form-control" id="username" value="李思思" name="username">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
+                    <label for="nickname" class="col-sm-2 control-label">昵称：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control user_nickname" id="inputEmail3" value="思思" name="nickname">
+                        <input type="text" class="form-control" id="nickname" value="思思" name="nickname">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
+                    <label for="email" class="col-sm-2 control-label">邮箱：</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control user_email" id="inputEmail3" value="lisisi@126.com" name="email">
+                        <input type="text" class="form-control" id="email" value="lisisi@126.com" name="email">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
+                    <label for="user_pic" class="col-sm-2 control-label">用户图标：</label>
                     <div class="col-sm-10">
-                        <img src="images/2.jpg" alt="" class="user_pic">
-                        <input type="file" id="exampleInputFile" name="user_pic">
+                        <img src="images/2.jpg" alt="" id="avatar" class="user_pic">
+                        <input type="file" id="user_pic" name="user_pic">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
+                    <label for="password" class="col-sm-2 control-label">密码：</label>
                     <div class="col-sm-4">
-                        <input type="password" class="form-control user_password" id="inputEmail3" value="12345678" name="password">
+                        <input type="password" class="form-control" id="password" value="12345678" name="password">
                     </div>
                 </div>
 
@@ -68,85 +68,50 @@
 
 </body>
 <script src="./tools/config.js"></script>
+<script src="./tools/user.js"></script>
 <script>
     $(function() {
-        var user_truename = $(".user_truename");
-        var user_nickname = $(".user_nickname");
-        var user_email = $(".user_email");
-        var user_pic = $(".user_pic");
-        // var exampleInputFile = $("#exampleInputFile");
-        var exampleInputFile = document.querySelector("#exampleInputFile");
-        var user_password = $(".user_password");
         var userinfo_edit = $(".btn-success");
         var user_form = $(".article_form")[0];
-        $.ajax({
-            type: "GET",
-            url: GET_USERINFO,
+
+        //获取用户信息
+        user.getUserInfo({
             success: function(res) {
-                console.log(res)
-                if (res.code === 200) {
-                    user_truename.val(res.data.username);
-                    user_nickname.val(res.data.nickname);
-                    user_email.val(res.data.email);
-                    user_pic.prop('src', res.data.user_pic);
-                    user_password.val(res.data.password);
-                }
-
-
+                $.each(res.data, function(k, ele) {
+                    if (k === 'user_pic') {
+                        $("#avatar").prop('src', res.data.user_pic);
+                        return;
+                    }
+                    $('#' + k).val(ele);
+                })
             }
         });
-        var objURL;
-        $(exampleInputFile).on('change', function() {
-            if (exampleInputFile.files.length === 0) {
-                exampleInputFile.files[0] = user_pic.prop('src');
-            }
-            var objUrl = getObjectURL(this.files[0]);
-            console.log(objUrl);
-        });
+
+        //编辑用户信息
         userinfo_edit.on('click', function() {
-            var fd = new FormData(user_form);
-
-            if (exampleInputFile.files.length === 0) {
-                // 说明没有选择文件
-                fd.append('user_pic', user_pic.prop('src'));
-            } else {
-                fd.append('user_pic', exampleInputFile.files[0]);
+            if ($("#username").val() === '' ||
+                $("#nickname").val() === '' ||
+                $("#email").val() === '' ||
+                $("#user_pic").val() === '' ||
+                $("#password").val() === '') {
+                alert("请完整填写内容!");
+                return;
             }
-
-            console.log(fd.getAll('username')[0]);
-            console.log(fd.getAll('nickname')[0]);
-            console.log(fd.getAll('email')[0]);
-            console.log(fd.getAll('user_pic')[1]);
-            console.log(fd.getAll('password')[0]);
-            $.ajax({
-                type: "POST",
-                url: USERINFO_EDIT,
-                data: {
-                    username: fd.getAll('username')[0],
-                    nickname: fd.getAll('nickname')[0],
-                    email: fd.getAll('email')[0],
-                    user_pic: fd.getAll('user_pic')[1],
-                    password: fd.getAll('password')[0],
-                },
-                success: function(res) {
-                    console.log(res);
+            var fd = new FormData(user_form);
+            user.userInfoEdit({
+                fd: fd,
+                success: function() {
+                    parent.location.href = './login.html';
                 }
             })
         });
 
-        function getObjectURL(file) {
-            var url = null;
-            if (window.createObjectURL != undefined) { //basic
-                url = window.createObjectURL(file);
-            } else if (window.URL != undefined) { //mozilla(firefox) 
-                url = window.URL.createObjectURL(file);
-            } else if (window.webkitURL != undefined) { //webkit or chrome
-                url = window.webkitURL.createObjectURL(file);
-            }
-            return url;
-        };
+        //本地图片展示
+        $("#user_pic").on('change', function() {
+            var tempSrc = URL.createObjectURL(this.files[0]);
+            $("#avatar").prop('src', tempSrc);
+        });
     })
 </script>
-
 
 </html>

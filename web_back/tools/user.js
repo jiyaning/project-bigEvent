@@ -1,4 +1,5 @@
 var user = {
+    //用户登录
     login: function(options) {
         $.ajax({
             type: "POST",
@@ -16,6 +17,7 @@ var user = {
             }
         });
     },
+    //用户退出
     logout: function(options) {
         $.ajax({
             type: "POST",
@@ -29,6 +31,7 @@ var user = {
             }
         })
     },
+    //获取用户基础信息
     getuser: function(options) {
         $.ajax({
             type: "GET",
@@ -36,6 +39,32 @@ var user = {
             success: function(res) {
                 if (res.code === 200) {
                     options.success(res);
+                }
+            }
+        })
+    },
+    //获取用户详细信息
+    getUserInfo: function(options) {
+        $.ajax({
+            type: "GET",
+            url: GET_USERINFO,
+            success: function(res) {
+                if (res.code === 200) {
+                    options.success(res);
+                }
+            }
+        })
+    },
+    userInfoEdit: function(options) {
+        $.ajax({
+            type: "POST",
+            url: USERINFO_EDIT,
+            data: options.fd,
+            contentType: false,
+            processData: false,
+            success: function(res) {
+                if (res.code === 200) {
+                    options.success();
                 }
             }
         })
