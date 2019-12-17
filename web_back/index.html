@@ -70,20 +70,15 @@
                     alert("网络错误，稍后再试~")
                 }
             })
-        })
-
-        $.ajax({
-            type: "GET",
-            url: GETUSER,
+        });
+        user.getuser({
             success: function(res) {
-                if (res.code === 200) {
-                    console.log(res);
-                    nickname.html('欢迎&nbsp;&nbsp;' + res.data.nickname + '');
-                    avatar.prop('src', res.data.user_pic);
-                    avatar1.prop('src', res.data.user_pic);
-                }
+                console.log(res);
+                nickname.html('欢迎&nbsp;&nbsp;' + res.data.nickname + '');
+                avatar.prop('src', res.data.user_pic);
+                avatar1.prop('src', res.data.user_pic);
             }
-        })
+        });
     </script>
 
     <script>
