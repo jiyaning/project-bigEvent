@@ -11,3 +11,5 @@ var GET_CAT = BASE_URL + '/admin/category_search'; //文章分类数据
 var ADD_CAT = BASE_URL + '/admin/category_add'; //新增分类
 var EDIT_CAT = BASE_URL + '/admin/category_edit'; //编辑分类
 var DEL_CAT = BASE_URL + '/admin/category_delete'; //删除分类
+var SERCH = BASE_URL + '/admin/search'; //文章搜索
+var COMMENTNUM = BASE_URL + 'admin/comment_search'; //文章评论搜索
