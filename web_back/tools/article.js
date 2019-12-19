@@ -51,5 +51,20 @@ var article = {
                 }
             }
         })
+    },
+    getArticle: function(options) {
+        $.ajax({
+            url: SERCH,
+            data: {
+                page: options.page,
+                type: options.type,
+                state: options.state
+            },
+            success: function(res) {
+                if (res.code === 200) {
+                    options.success(res);
+                }
+            }
+        });
     }
 }

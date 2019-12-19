@@ -151,41 +151,36 @@
         })
 
         function getArtical() {
-            $.ajax({
-                url: 'http://localhost:8000/admin/search',
-                data: {
-                    page: page,
-                    type: $("#selCategory").val(),
-                    state: $("#selStatus").val()
-                },
+            article.getArticle({
+                page: page,
+                type: $("#selCategory").val(),
+                state: $("#selStatus").val(),
                 success: function(res) {
-                    if (res.code === 200) {
-                        var htmlStr = template('articleItems', res);
-                        $("tbody").html(htmlStr);
-                        var totalpage = res.totalPage;
-                        if (totalpage === lastTotalPage) {
-                            return;
-                        }
-
-                        lastTotalPage = totalpage;
-
-                        $list.twbsPagination('destroy');
-
-                        $list.twbsPagination({
-                            totalPages: totalpage,
-                            visiblePages: 7,
-                            first: '首页',
-                            prev: '上一页',
-                            next: '下一页',
-                            last: '尾页',
-                            onPageClick: function(event, currentpage) {
-                                page = currentpage;
-                                getArtical();
-                            }
-                        });
+                    var htmlStr = template('articleItems', res);
+                    $("tbody").html(htmlStr);
+                    var totalpage = res.totalPage;
+                    if (totalpage === lastTotalPage) {
+                        return;
                     }
+
+                    lastTotalPage = totalpage;
+
+                    $list.twbsPagination('destroy');
+
+                    $list.twbsPagination({
+                        totalPages: totalpage,
+                        visiblePages: 7,
+                        first: '首页',
+                        prev: '上一页',
+                        next: '下一页',
+                        last: '尾页',
+                        onPageClick: function(event, currentpage) {
+                            page = currentpage;
+                            getArtical();
+                        }
+                    });
                 }
-            });
+            })
         }
 
         article.getCat({
